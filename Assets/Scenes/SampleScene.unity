@@ -510,10 +510,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   jumpForce: 12
-  runBegin: 0
-  rb: {fileID: 1497119417}
+  isRunning: 0
   isGrounded: 0
-  GroundCheckDistance: 1.47
+  GroundCheckDistance: 1.4
   whatisGround:
     serializedVersion: 2
     m_Bits: 8

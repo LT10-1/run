@@ -5,10 +5,17 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+
+    private Rigidbody2D rb;
+    private Animator anim;
+
+
+
     [Header("Move Info")]
-    public Rigidbody2D rb;
-    public float moveSpeed;
-    public float jumpForce;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float jumpForce;
+
+    [SerializeField] private bool isRunning;
     private bool runBegin;
 
     [Header("Collision info")]
@@ -18,7 +25,8 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -27,8 +35,17 @@ public class Player : MonoBehaviour
         if (runBegin)
             rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
 
+        AnimatorController();
         CheckCollision();
         CheckInput();
+    }
+
+    private void AnimatorController()
+    {
+        isRunning = rb.velocity.x != 0f;
+
+        // if (isRunning == true && isGrounded)
+        anim.SetBool("isRunning", isRunning);
     }
 
     private void CheckCollision()
