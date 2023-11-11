@@ -4,66 +4,58 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
+
 {
-
+    // Move Info
+    [SerializeField] private float moveSpeed = 1f;
+    private float jumpForce = 8f;
     private Rigidbody2D rb;
-    private Animator anim;
+
+    //Check Ground
+    [SerializeField] public bool isGrounded; // Check Ground
+    [SerializeField] private float distance;  // Do dai
+    [SerializeField] public LayerMask groundlayer; // Layer
+
+    //Anim
+    public Animator anim;
+    
 
 
 
-    [Header("Move Info")]
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float jumpForce;
 
-    [SerializeField] private bool isRunning;
-    private bool runBegin;
-
-    [Header("Collision info")]
-    [SerializeField] private bool isGrounded;
-    [SerializeField] private float GroundCheckDistance;
-    [SerializeField] private LayerMask whatisGround;
-
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void Update()
     {
-        if (runBegin)
-            rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+        //Checking Ground
+        isGrounded = Physics2D.Raycast(
+            transform.position, // Diem Ve
+            Vector2.down,       // Huong ve
+            distance,           // Do dai
+            groundlayer);       // Layer 
 
-        AnimatorController();
-        CheckCollision();
-        CheckInput();
-    }
+        rb.velocity = new Vector2 (moveSpeed, rb.velocity.y); // Auto MoveRight * Speed
 
-    private void AnimatorController()
-    {
-        isRunning = rb.velocity.x != 0f;
-
-        // if (isRunning == true && isGrounded)
-        anim.SetBool("isRunning", isRunning);
-    }
-
-    private void CheckCollision()
-    {
-        isGrounded = Physics2D.Raycast(transform.position, Vector2.down, GroundCheckDistance, whatisGround);
-    }
-
-    private void CheckInput()
-    {
-        if (Input.GetButtonDown("Fire2"))
-            runBegin = true;
-
-        if (Input.GetButtonDown("Jump") && isGrounded )
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded ) // Neu bam nut Jump + ground check ok
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
 
+        //Anim State
+        
+        anim.SetFloat("xInput", rb.velocity.x);       // Running State
+        anim.SetBool("isGrounded", isGrounded);     // Jump Check Ground
+        
+        
+        if (rb.velocity.x != 0f)                     // Check velocity anim State machine (Jump)
+            anim.SetFloat("yInput", rb.velocity.y);    
     }
     private void OnDrawGizmos()
     {
-        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - GroundCheckDistance));
-    }
+        Gizmos.DrawLine(transform.position, new Vector2 (transform.position.x, transform.position.y - distance));
+    } // Draw a line from character to layerdistance
 }

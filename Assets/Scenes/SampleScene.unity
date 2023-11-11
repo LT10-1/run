@@ -351,7 +351,7 @@ GameObject:
   - component: {fileID: 1497119419}
   - component: {fileID: 1497119418}
   - component: {fileID: 1497119417}
-  - component: {fileID: 1497119416}
+  - component: {fileID: 1497119422}
   - component: {fileID: 1497119420}
   - component: {fileID: 1497119421}
   m_Layer: 0
@@ -361,32 +361,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!61 &1497119416
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1497119415}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.026483536, y: -0.06977558}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.2535}
-    oldSize: {x: 6, y: 5.25}
-    newSize: {x: 6, y: 5.25}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.8886814, y: 2.5221968}
-  m_EdgeRadius: 0
 --- !u!50 &1497119417
 Rigidbody2D:
   serializedVersion: 4
@@ -508,11 +482,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df3f83114ada3484fa12c78545376a9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.5
-  jumpForce: 12
-  isRunning: 0
-  isGrounded: 0
-  GroundCheckDistance: 1.4
-  whatisGround:
+  moveSpeed: 1
+  isGrounded: 1
+  distance: 1.4
+  groundlayer:
     serializedVersion: 2
     m_Bits: 8
+  anim: {fileID: 0}
+  isRunning: 1
+--- !u!70 &1497119422
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497119415}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.030315876, y: -0.07007003}
+  m_Size: {x: 0.9070053, y: 2.5743546}
+  m_Direction: 0
