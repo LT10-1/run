@@ -58,6 +58,7 @@ public class Player : MonoBehaviour
         if(!wallDectected)                                   // Neu khong phai wall thi
         rb.velocity = new Vector2(moveSpeed, rb.velocity.y); // Auto MoveRight * Speed
         
+        if (isGrounded) canDoubleJump = true;
 
         if (Input.GetKeyDown(KeyCode.Space))  
             Jump();
@@ -77,7 +78,7 @@ public class Player : MonoBehaviour
         if (isGrounded) // Neu bam nut Jump + ground check ok
         {
             jumpForce = defaultJumpForce;
-            canDoubleJump = true;
+            
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
         else if (canDoubleJump)
