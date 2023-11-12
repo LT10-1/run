@@ -8,9 +8,12 @@ public class Player : MonoBehaviour
 {
     // Move Info
     [SerializeField] private float moveSpeed = 1f;
-    private float jumpForce = 8f;
+    private float jumpForce = 12f;
     private Rigidbody2D rb;
     private bool canDoubleJump;
+    [SerializeField] private float doubleJumpForce = 8f;
+    [SerializeField] private float defaultJumpForce;
+
 
     //Check Ground
     [SerializeField] public bool isGrounded; // Check Ground
@@ -28,7 +31,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-
+        defaultJumpForce = jumpForce;
     }
 
 
@@ -59,11 +62,13 @@ public class Player : MonoBehaviour
     {
         if (isGrounded) // Neu bam nut Jump + ground check ok
         {
+            jumpForce = defaultJumpForce;
             canDoubleJump = true;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
         else if (canDoubleJump)
         {
+            jumpForce = doubleJumpForce;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             canDoubleJump = false;
 
