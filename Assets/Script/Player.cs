@@ -16,9 +16,12 @@ public class Player : MonoBehaviour
 
 
     //Check Ground
-    [SerializeField] public bool isGrounded; // Check Ground
+    [SerializeField] private bool isGrounded; // Check Ground
     [SerializeField] private float distance;  // Do dai
-    [SerializeField] public LayerMask groundlayer; // Layer
+    [SerializeField] private LayerMask groundlayer; // Layer
+    [SerializeField] private Vector2 wallCheckSize;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private bool wallDectected;
 
     //Anim
     public Animator anim;
@@ -43,8 +46,19 @@ public class Player : MonoBehaviour
             Vector2.down,       // Huong ve
             distance,           // Do dai
             groundlayer);       // Layer 
+        // Checking Wall
 
+        wallDectected = Physics2D.BoxCast(
+            wallCheck.position, 
+            wallCheckSize,
+            0, 
+            Vector2.zero, 
+            groundlayer);
+
+        if(!wallDectected)                                   // Neu khong phai wall thi
         rb.velocity = new Vector2(moveSpeed, rb.velocity.y); // Auto MoveRight * Speed
+        
+
         if (Input.GetKeyDown(KeyCode.Space))  
             Jump();
 
@@ -77,6 +91,9 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        // Draw a line from character to layerdistance
         Gizmos.DrawLine(transform.position, new Vector2 (transform.position.x, transform.position.y - distance));
-    } // Draw a line from character to layerdistance
+        // Draw a cube next to character to check wall
+        Gizmos.DrawWireCube(wallCheck.position, wallCheckSize);
+    } 
 }
