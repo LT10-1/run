@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
 {
     // Move Info
     [SerializeField] private float moveSpeed = 1f;
-    private float jumpForce = 12f;
+    private float jumpForce = 15f;
     private Rigidbody2D rb;
     private bool canDoubleJump;
     [SerializeField] private float doubleJumpForce = 8f;
@@ -37,6 +37,16 @@ public class Player : MonoBehaviour
     public float slideCooldownCounter;
     private bool cellingDetected;
 
+    public bool ledgeDetected;
+    [SerializeField] private Vector2 offset1;
+    [SerializeField] private Vector2 offset2;
+    private Vector2 climbBeginPosition;
+    private Vector2 climbEndPosition;
+
+    private bool canGrabLedge = true;
+    private bool canClimb;
+
+
 
 
     private void Start()
@@ -52,6 +62,52 @@ public class Player : MonoBehaviour
         slidingCounter -= Time.deltaTime;
         slideCooldownCounter -= Time.deltaTime;
 
+        CheckCollision();
+        CheckInput();
+        CheckForSlide();
+        CheckForLedge();
+        
+        //Anim State
+
+        anim.SetFloat("xInput", rb.velocity.x);          // Running State
+        anim.SetBool("isGrounded", isGrounded);          // Jump Check Ground
+        anim.SetBool("canDoubleJump", canDoubleJump);
+        anim.SetBool("isSliding", isSliding);
+        anim.SetBool("canClimb", canClimb);
+
+        anim.SetFloat("yInput", rb.velocity.y);           // Check velocity anim State machine (Jump)
+    }
+
+   
+
+    private void CheckForLedge()
+    {
+        if(ledgeDetected && canGrabLedge)
+        {
+            canGrabLedge = false;
+            Vector2 ledgePosition = GetComponentInChildren<LedgeDetection>().transform.position;
+            climbBeginPosition = ledgePosition + offset1;
+            climbEndPosition = ledgePosition + offset2;
+            canClimb = true;
+        }
+        if(canClimb) 
+            transform.position = climbBeginPosition; 
+        
+    }
+
+    private void LedgeClimbOver()
+    {
+        canClimb = false;
+        transform.position = climbEndPosition;
+        Invoke("AllowLedgeGrab", 1.4f);
+    }
+
+    private void AllowLedgeGrab() => canGrabLedge = true;
+        
+
+
+    private void CheckCollision()
+    {
         //Checking Ground
         isGrounded = Physics2D.Raycast(
             transform.position, // Diem Ve
@@ -68,22 +124,11 @@ public class Player : MonoBehaviour
             groundlayer);
         // Checking Celling
         cellingDetected = Physics2D.Raycast(
-            transform.position, 
-            Vector2.up, 
-            cellingDetectedDistance, 
+            transform.position,
+            Vector2.up,
+            cellingDetectedDistance,
             groundlayer);
-
-        CheckInput();
-        CheckForSlide();
-        //Anim State
-
-        anim.SetFloat("xInput", rb.velocity.x);          // Running State
-        anim.SetBool("isGrounded", isGrounded);          // Jump Check Ground
-        anim.SetBool("canDoubleJump", canDoubleJump);
-        anim.SetBool("isSliding", isSliding);
-
-                           
-        anim.SetFloat("yInput", rb.velocity.y);           // Check velocity anim State machine (Jump)
+        Debug.Log(ledgeDetected);
     }
 
     private void CheckForSlide()
