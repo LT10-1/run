@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,18 +16,26 @@ public class Player : MonoBehaviour
     [SerializeField] private float defaultJumpForce;
 
 
-    //Check Ground
+    // Check Ground
     [SerializeField] private bool isGrounded; // Check Ground
     [SerializeField] private float distance;  // Do dai
+    [SerializeField] private float cellingDetectedDistance;
     [SerializeField] private LayerMask groundlayer; // Layer
     [SerializeField] private Vector2 wallCheckSize;
     [SerializeField] private Transform wallCheck;
     [SerializeField] private bool wallDectected;
 
-    //Anim
+    // Anim
     public Animator anim;
-    
+    // Sliding
 
+    public bool isSliding;
+    public float slidingDuration;
+    public float slidingSpeed;
+    public float slidingCounter;
+    public float slideCooldown;
+    public float slideCooldownCounter;
+    private bool cellingDetected;
 
 
 
@@ -40,6 +49,9 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        slidingCounter -= Time.deltaTime;
+        slideCooldownCounter -= Time.deltaTime;
+
         //Checking Ground
         isGrounded = Physics2D.Raycast(
             transform.position, // Diem Ve
@@ -49,32 +61,77 @@ public class Player : MonoBehaviour
         // Checking Wall
 
         wallDectected = Physics2D.BoxCast(
-            wallCheck.position, 
+            wallCheck.position,
             wallCheckSize,
-            0, 
-            Vector2.zero, 
+            0,
+            Vector2.zero,
+            groundlayer);
+        // Checking Celling
+        cellingDetected = Physics2D.Raycast(
+            transform.position, 
+            Vector2.up, 
+            cellingDetectedDistance, 
             groundlayer);
 
-        if(!wallDectected)                                   // Neu khong phai wall thi
-        rb.velocity = new Vector2(moveSpeed, rb.velocity.y); // Auto MoveRight * Speed
-        
-        if (isGrounded) canDoubleJump = true;
-
-        if (Input.GetKeyDown(KeyCode.Space))  
-            Jump();
-
+        CheckInput();
+        CheckForSlide();
         //Anim State
 
-        anim.SetFloat("xInput", rb.velocity.x);       // Running State
-        anim.SetBool("isGrounded", isGrounded);     // Jump Check Ground
+        anim.SetFloat("xInput", rb.velocity.x);          // Running State
+        anim.SetBool("isGrounded", isGrounded);          // Jump Check Ground
         anim.SetBool("canDoubleJump", canDoubleJump);
+        anim.SetBool("isSliding", isSliding);
 
-        if (rb.velocity.x != 0f)                     // Check velocity anim State machine (Jump)
-            anim.SetFloat("yInput", rb.velocity.y);
+                           
+        anim.SetFloat("yInput", rb.velocity.y);           // Check velocity anim State machine (Jump)
+    }
+
+    private void CheckForSlide()
+    {
+        if(slidingCounter < 0 && !cellingDetected)
+            isSliding = false;
+    }
+          
+
+    private void CheckInput()
+    {
+        if (!wallDectected)                                   // Neu khong phai wall thi
+            Movement(); // Auto MoveRight * Speed
+
+        if (isGrounded) canDoubleJump = true;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            Jump();
+        if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded)
+            SlidingButton();
+    }
+
+    private void SlidingButton()
+    {
+        if (rb.velocity.x != 0 && slideCooldownCounter < 0)
+        {
+            isSliding = true;
+            slidingCounter = slidingDuration;
+            slideCooldownCounter = slideCooldown;
+        }
+    }
+
+    private void Movement()
+    {
+        if(isSliding )
+            rb.velocity = new Vector2 (slidingSpeed,rb.velocity.y);
+        else
+            rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+        
+            
+        
     }
 
     private void Jump()
     {
+        if (isSliding)
+            return;
+
         if (isGrounded) // Neu bam nut Jump + ground check ok
         {
             jumpForce = defaultJumpForce;
@@ -96,5 +153,7 @@ public class Player : MonoBehaviour
         Gizmos.DrawLine(transform.position, new Vector2 (transform.position.x, transform.position.y - distance));
         // Draw a cube next to character to check wall
         Gizmos.DrawWireCube(wallCheck.position, wallCheckSize);
+        // Draw a line from character up to check layerground
+        Gizmos.DrawLine (transform.position, new Vector2 (transform.position.x, transform.position.y + cellingDetectedDistance));
     } 
 }

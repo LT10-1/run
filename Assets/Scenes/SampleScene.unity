@@ -497,8 +497,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1231339375}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.06, y: -0.4, z: 0}
-  m_LocalScale: {x: 11.63703, y: 2.2240658, z: 1}
+  m_LocalPosition: {x: 31.37, y: -0.07, z: 0}
+  m_LocalScale: {x: 50.62108, y: 0.945228, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -651,7 +651,8 @@ MonoBehaviour:
   doubleJumpForce: 8
   defaultJumpForce: 0
   isGrounded: 1
-  distance: 1.4
+  distance: 1.43
+  cellingDetectedDistance: 0.86
   groundlayer:
     serializedVersion: 2
     m_Bits: 8
@@ -659,6 +660,12 @@ MonoBehaviour:
   wallCheck: {fileID: 1012440951}
   wallDectected: 0
   anim: {fileID: 0}
+  isSliding: 0
+  slidingDuration: 0.4
+  slidingSpeed: 12
+  slidingCounter: 0
+  slideCooldown: 2
+  slideCooldownCounter: 0
 --- !u!70 &1497119422
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -672,6 +679,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.030315876, y: -0.07007003}
+  m_Offset: {x: -0.0303158, y: -0.07007}
   m_Size: {x: 0.9070053, y: 2.5743546}
   m_Direction: 0
