@@ -7,6 +7,16 @@ using UnityEngine;
 public class Player : MonoBehaviour
 
 {
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float speedMultiplier;
+    [Space]
+    [SerializeField] private float milestoneIncreaser;
+    private float speedMilstone;
+    private float defaultSpeed;
+    private float defaultMilstoneIncrease;
+
+
+
     // Move Info
     [SerializeField] private float moveSpeed = 1f;
     private float jumpForce = 15f;
@@ -14,6 +24,8 @@ public class Player : MonoBehaviour
     private bool canDoubleJump;
     [SerializeField] private float doubleJumpForce = 8f;
     [SerializeField] private float defaultJumpForce;
+
+
 
 
     // Check Ground
@@ -54,6 +66,10 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         defaultJumpForce = jumpForce;
+        speedMilstone = milestoneIncreaser;
+        defaultSpeed = moveSpeed;
+        defaultMilstoneIncrease = milestoneIncreaser;
+
     }
 
 
@@ -64,9 +80,12 @@ public class Player : MonoBehaviour
 
         CheckCollision();
         CheckInput();
+        SpeedController();
         CheckForSlide();
         CheckForLedge();
-        
+        Movement();
+       
+
         //Anim State
 
         anim.SetFloat("xInput", rb.velocity.x);          // Running State
@@ -78,7 +97,37 @@ public class Player : MonoBehaviour
         anim.SetFloat("yInput", rb.velocity.y);           // Check velocity anim State machine (Jump)
     }
 
-   
+    private void SpeedReset()
+    {
+        moveSpeed = defaultSpeed;
+        milestoneIncreaser = defaultMilstoneIncrease;
+        
+        
+    }
+
+    private void SpeedController()
+    {
+        if(moveSpeed == maxSpeed)
+        {
+            
+            return;
+        }
+
+        if(transform.position.x > speedMilstone)
+        {
+            speedMilstone += milestoneIncreaser;
+
+            moveSpeed *= speedMultiplier;
+            milestoneIncreaser *= speedMultiplier;
+            
+
+            if(moveSpeed> maxSpeed)
+            {
+                moveSpeed = maxSpeed;
+            }
+        }
+    }
+
 
     private void CheckForLedge()
     {
@@ -120,7 +169,7 @@ public class Player : MonoBehaviour
             wallCheck.position,
             wallCheckSize,
             0,
-            Vector2.zero,
+            Vector2.right,
             groundlayer);
         // Checking Celling
         cellingDetected = Physics2D.Raycast(
@@ -128,7 +177,7 @@ public class Player : MonoBehaviour
             Vector2.up,
             cellingDetectedDistance,
             groundlayer);
-        Debug.Log(ledgeDetected);
+       
     }
 
     private void CheckForSlide()
@@ -163,14 +212,19 @@ public class Player : MonoBehaviour
 
     private void Movement()
     {
-        if(isSliding )
-            rb.velocity = new Vector2 (slidingSpeed,rb.velocity.y);
+        if (wallDectected)
+        {
+            SpeedReset();
+            return;
+        }
+        
+        if (isSliding)
+                rb.velocity = new Vector2(slidingSpeed, rb.velocity.y);
         else
-            rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
-        
-            
-        
+                rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+       
     }
+
 
     private void Jump()
     {
