@@ -685,9 +685,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 0.6
   groundlayer:
-    serializedVersion: 2
     m_Bits: 8
-  player: {fileID: 1497119421}
+  player: {fileID: 0}
+  canDetected: 0
 --- !u!61 &1399452245
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -880,8 +880,6 @@ GameObject:
   - component: {fileID: 1497119418}
   - component: {fileID: 1497119417}
   - component: {fileID: 1497119422}
-  - component: {fileID: 1497119420}
-  - component: {fileID: 1497119421}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -979,64 +977,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1497119420
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1497119415}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4ae7335692181194d8f0df214b433458, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1497119421
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1497119415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df3f83114ada3484fa12c78545376a9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxSpeed: 20
-  speedMultiplier: 1.15
-  milestoneIncreaser: 50
-  moveSpeed: 5
-  doubleJumpForce: 8
-  defaultJumpForce: 0
-  isGrounded: 0
-  distance: 1.49
-  cellingDetectedDistance: 0.86
-  groundlayer:
-    serializedVersion: 2
-    m_Bits: 8
-  wallCheckSize: {x: 0.13, y: 1.97}
-  wallCheck: {fileID: 1012440951}
-  wallDectected: 1
-  anim: {fileID: 0}
-  isSliding: 0
-  slidingDuration: 0.4
-  slidingSpeed: 12
-  slidingCounter: 0
-  slideCooldown: 2
-  slideCooldownCounter: 0
-  ledgeDetected: 0
-  offset1: {x: -0.622, y: -1.4}
-  offset2: {x: 0.698, y: 1.278}
 --- !u!70 &1497119422
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
