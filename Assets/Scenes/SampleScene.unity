@@ -899,7 +899,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 12
+  m_GravityScale: 6
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -1005,6 +1005,12 @@ MonoBehaviour:
   moveSpeed: 8
   jumpForce: 18
   doubleJumpForce: 12
+  slideSpeed: 12
+  slideTime: 0.5
+  slideTimeCounter: 0
+  isSliding: 0
+  slideCooldown: 2
+  slideCooldownCounter: 0
   isGrounded: 0
   groundCheckDistance: 1.4
   whatIsGround:
@@ -1012,6 +1018,8 @@ MonoBehaviour:
     m_Bits: 8
   wallCheck: {fileID: 1012440951}
   wallCheckSize: {x: 0.5, y: 2.25}
+  cellingCheckDistance: 0.9
+  cellingDetected: 0
   wallDetected: 0
 --- !u!95 &1497119424
 Animator:
