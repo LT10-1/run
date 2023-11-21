@@ -55,16 +55,16 @@ public class Player : MonoBehaviour
         slideTimeCounter -= Time.deltaTime;
         slideCooldownCounter -= Time.deltaTime;
 
-        if (playerUnlocked && !wallDetected)
-        {
+        if (playerUnlocked)
             Move();
-
-        }
+        
 
         CheckInput();
         CheckCollision();
         AnimatorController();
         CheckForSlide();
+        
+
         if(isGrounded)
             canDoubleJump = true;
     }
@@ -96,16 +96,20 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
+        if(wallDetected)
+            return;
         if(isSliding)
-        {
             rb.velocity = new Vector2(slideSpeed, rb.velocity.y);
-        }
         else
-        {
             rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
-
-        }
+        
+        
     }
+        
+        
+        
+
+        
 
 
     private void JumpButton()
