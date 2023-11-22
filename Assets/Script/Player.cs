@@ -9,6 +9,16 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
 
+    [Header("Speed info")]
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float speedMultiplier;
+    private float defaultSpeed;
+    [Space]
+    [SerializeField] private float milestoneIncreaser;
+    private float deaultMilestoneIncrease;
+    private float speedMilestone;
+
+
     [Header("Move info")]
     [SerializeField] private float moveSpeed = 8f;
     [SerializeField] private float jumpForce = 12f;
@@ -57,7 +67,9 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
-        
+        speedMilestone = milestoneIncreaser;
+        defaultSpeed = moveSpeed;
+        deaultMilestoneIncrease = milestoneIncreaser;
     }
 
     void Update()
@@ -74,13 +86,36 @@ public class Player : MonoBehaviour
         AnimatorController();
         CheckForSlide();
         CheckForLedge();
-
+        SpeedController();
 
 
         if (isGrounded)
             canDoubleJump = true;
     }
 
+    private void SpeedReset()
+    {
+        moveSpeed = defaultSpeed;
+        milestoneIncreaser = deaultMilestoneIncrease;
+    }
+
+    private void SpeedController()
+    {
+        if (moveSpeed == maxSpeed)
+            return;
+        
+        if(transform.position.x > speedMilestone) 
+        {
+            speedMilestone = speedMilestone + milestoneIncreaser;
+
+            moveSpeed = moveSpeed * speedMilestone;
+            milestoneIncreaser = milestoneIncreaser * speedMultiplier;
+
+            if(moveSpeed > maxSpeed)
+                moveSpeed = maxSpeed;
+            
+        }
+    }
     
 
     private void CheckForLedge()
@@ -88,6 +123,8 @@ public class Player : MonoBehaviour
         if (ledgeDetected && canGrabLedge)
         { 
             canGrabLedge = false;
+            rb.gravityScale = 0;
+
             Vector2 ledgePosition = GetComponentInChildren<LedgeDetection>().transform.position;
 
             climbBeginPosition = ledgePosition + offset1;
@@ -102,7 +139,7 @@ public class Player : MonoBehaviour
 
     private void LedgeClimbOver()
     {
-        
+        rb.gravityScale = 6;
         canClimb = false;
         transform.position = climbOverPosition;
         Invoke("AllowLedgeGrab", .1f);
@@ -132,7 +169,10 @@ public class Player : MonoBehaviour
     private void Move()
     {
         if(wallDetected)
+        {
+            SpeedReset();
             return;
+        }
         if(isSliding && isGrounded)
             rb.velocity = new Vector2(slideSpeed, rb.velocity.y);
         else
@@ -187,14 +227,19 @@ public class Player : MonoBehaviour
         anim.SetBool("canDoubleJump", canDoubleJump);
         anim.SetBool("isSliding", isSliding);
         anim.SetBool("isClimb", canClimb);
+
+        if (rb.velocity.y < -20)
+            anim.SetBool("canRoll", true);
     }
+
+    private void RollAnimFinished() => anim.SetBool("canRoll", false);
 
     private void CheckCollision()
     {
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, whatIsGround);
         cellingDetected = Physics2D.Raycast(transform.position, Vector2.up, cellingCheckDistance, whatIsGround);
         wallDetected = Physics2D.BoxCast(wallCheck.position, wallCheckSize, 0, Vector2.zero, 0, whatIsGround);
-        Debug.Log(ledgeDetected);
+        
     }
 
     private void OnDrawGizmos()
