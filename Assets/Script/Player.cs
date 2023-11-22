@@ -36,6 +36,16 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector2 wallCheckSize;
     [SerializeField] private float cellingCheckDistance;
     [SerializeField] private bool cellingDetected;
+    [HideInInspector] public bool ledgeDetected;
+
+    [Header("Ledge info")]
+    [SerializeField] private Vector2 offset1;
+    [SerializeField] private Vector2 offset2;
+
+    private Vector2 climbBeginPosition;
+    private Vector2 climbOverPosition;
+    private bool canGrabLedge = true;
+    private bool canClimb;
 
 
 
@@ -63,24 +73,49 @@ public class Player : MonoBehaviour
         CheckCollision();
         AnimatorController();
         CheckForSlide();
-        
+        CheckForLedge();
 
-        if(isGrounded)
+
+
+        if (isGrounded)
             canDoubleJump = true;
     }
+
+    
+
+    private void CheckForLedge()
+    {
+        if (ledgeDetected && canGrabLedge)
+        { 
+            canGrabLedge = false;
+            Vector2 ledgePosition = GetComponentInChildren<LedgeDetection>().transform.position;
+
+            climbBeginPosition = ledgePosition + offset1;
+            climbOverPosition = ledgePosition + offset2;
+
+            canClimb = true;
+        } 
+
+        if(canClimb)
+            transform.position = climbBeginPosition;
+    }
+
+    private void LedgeClimbOver()
+    {
+        
+        canClimb = false;
+        transform.position = climbOverPosition;
+        Invoke("AllowLedgeGrab", .1f);
+    }
+
+    private void AllowLedgeGrab() => canGrabLedge = true;
 
     private void CheckForSlide()
     {
         if(slideTimeCounter < 0 && !cellingDetected)
-        {
-            
             isSliding = false;
-        }
-       
+        
     }
-
-
-
 
     private void SlideButton()
     {
@@ -98,7 +133,7 @@ public class Player : MonoBehaviour
     {
         if(wallDetected)
             return;
-        if(isSliding)
+        if(isSliding && isGrounded)
             rb.velocity = new Vector2(slideSpeed, rb.velocity.y);
         else
             rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
@@ -151,6 +186,7 @@ public class Player : MonoBehaviour
         anim.SetBool("isGrounded", isGrounded);
         anim.SetBool("canDoubleJump", canDoubleJump);
         anim.SetBool("isSliding", isSliding);
+        anim.SetBool("isClimb", canClimb);
     }
 
     private void CheckCollision()
@@ -158,6 +194,7 @@ public class Player : MonoBehaviour
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, whatIsGround);
         cellingDetected = Physics2D.Raycast(transform.position, Vector2.up, cellingCheckDistance, whatIsGround);
         wallDetected = Physics2D.BoxCast(wallCheck.position, wallCheckSize, 0, Vector2.zero, 0, whatIsGround);
+        Debug.Log(ledgeDetected);
     }
 
     private void OnDrawGizmos()
