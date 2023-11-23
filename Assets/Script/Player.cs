@@ -8,6 +8,17 @@ public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Animator anim;
+    private SpriteRenderer sr;
+
+    [Header("Knockback info")]
+    [SerializeField] private Vector2 knockbackDir;
+    private bool isKnocked;
+    private bool canbeKnocked = true;
+
+    private bool isDead;
+
+
+
 
     [Header("Speed info")]
     [SerializeField] private float maxSpeed;
@@ -66,32 +77,112 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
 
         speedMilestone = milestoneIncreaser;
         defaultSpeed = moveSpeed;
         deaultMilestoneIncrease = milestoneIncreaser;
+        
     }
 
     void Update()
     {
+        CheckCollision();
+        AnimatorController();
+
         slideTimeCounter -= Time.deltaTime;
         slideCooldownCounter -= Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.K))
+            Knockback();
+
+        if (Input.GetKeyDown(KeyCode.D) && !isDead)
+            StartCoroutine(Die());
+
+        if (isDead) return;
+
+        if (isKnocked)
+           return;
 
         if (playerUnlocked)
             Move();
         
-
-        CheckInput();
-        CheckCollision();
-        AnimatorController();
-        CheckForSlide();
-        CheckForLedge();
-        SpeedController();
-
-
         if (isGrounded)
             canDoubleJump = true;
+
+        SpeedController();
+
+        CheckForLedge();
+        CheckForSlide();
+
+        CheckInput();
     }
+
+    private IEnumerator Die()
+    {
+        isDead = true;
+        rb.velocity = knockbackDir;
+        anim.SetBool("isDead", true);
+
+        yield return new WaitForSeconds(.5f);
+        rb.velocity = new Vector2(0, 0);
+    }
+
+    
+
+    private IEnumerator Invcibility()
+    {
+        Color originalColor = sr.color;
+        Color darkenColor = new Color(sr.color.r, sr.color.g, sr.color.b, .5f);
+
+        canbeKnocked = false;
+        
+        sr.color = darkenColor;
+        yield return new WaitForSeconds(.1f);
+        
+        sr.color = originalColor;
+        yield return new WaitForSeconds(.1f);
+
+        sr.color = darkenColor;
+        yield return new WaitForSeconds(.1f);
+
+        sr.color = originalColor;
+        yield return new WaitForSeconds(.1f);
+        
+        sr.color = darkenColor;
+        yield return new WaitForSeconds(.1f);
+
+        sr.color = originalColor;
+        yield return new WaitForSeconds(.1f);
+
+        sr.color = darkenColor;
+        yield return new WaitForSeconds(.1f);
+
+        sr.color = originalColor;
+        yield return new WaitForSeconds(.1f);
+        
+        sr.color = darkenColor;
+        yield return new WaitForSeconds(.1f);
+
+        sr.color = originalColor;
+        canbeKnocked = true;
+       
+
+    }
+
+    private void Knockback()
+    {
+        if(!canbeKnocked) return;
+        StartCoroutine(Invcibility());
+        isKnocked = true;
+        rb.velocity = knockbackDir;
+    }
+
+    private void cancelKnockback()
+    {
+        isKnocked = false;
+    }
+
 
     private void SpeedReset()
     {
@@ -222,7 +313,8 @@ public class Player : MonoBehaviour
     {
         anim.SetFloat("xInput", rb.velocity.x);
         anim.SetFloat("yInput", rb.velocity.y);
-        
+
+        anim.SetBool("isKnocked", isKnocked);
         anim.SetBool("isGrounded", isGrounded);
         anim.SetBool("canDoubleJump", canDoubleJump);
         anim.SetBool("isSliding", isSliding);
