@@ -59,7 +59,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 20
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -223,10 +223,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      Coin (16 x 16)_0: -590313304783847437
+      Coin (16 x 16)_1: -8723478487562341402
       Coin (16 x 16)_2: -4435104820111122897
       Coin (16 x 16)_3: 6524766481683253504
-      Coin (16 x 16)_1: -8723478487562341402
-      Coin (16 x 16)_0: -590313304783847437
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

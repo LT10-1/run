@@ -50,7 +50,7 @@ TagManager:
   - name: Background
     uniqueID: 1698035669
     locked: 0
-  - name: Coin
+  - name: Collectable
     uniqueID: 2721176903
     locked: 0
   - name: Player
