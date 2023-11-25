@@ -132,8 +132,10 @@ public class Player : MonoBehaviour
         rb.velocity = knockbackDir;
         anim.SetBool("isDead", true);
 
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1f);
         rb.velocity = new Vector2(0, 0);
+        yield return new WaitForSeconds(1f);
+        GameManager.Instance.RestartLevel();
     }
 
     
