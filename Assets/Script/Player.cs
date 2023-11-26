@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     private bool canbeKnocked = true;
 
     private bool isDead;
+    [HideInInspector] public bool extraLife;
 
 
 
@@ -37,7 +38,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float doubleJumpForce;
     
 
-    private bool playerUnlocked;
+    [HideInInspector] public bool playerUnlocked;
 
     [Header("Slide info")]
     [SerializeField] private float slideSpeed;
@@ -93,16 +94,16 @@ public class Player : MonoBehaviour
         slideTimeCounter -= Time.deltaTime;
         slideCooldownCounter -= Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.K))
-            Knockback();
+        extraLife = moveSpeed >= maxSpeed;
 
-        if (Input.GetKeyDown(KeyCode.D) && !isDead)
-            StartCoroutine(Die());
-
-        if (isDead) return;
+        if (isDead) 
+            return;
 
         if (isKnocked)
-           return;
+        {
+            SpeedReset();
+            return;
+        }
 
         if (playerUnlocked)
             Move();
@@ -120,7 +121,7 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        if (moveSpeed >= maxSpeed)
+        if (extraLife)
             Knockback();
         else
             StartCoroutine(Die());
@@ -135,6 +136,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(1f);
         rb.velocity = new Vector2(0, 0);
         yield return new WaitForSeconds(1f);
+        GameManager.Instance.Save();
         GameManager.Instance.RestartLevel();
     }
 
@@ -309,8 +311,8 @@ public class Player : MonoBehaviour
     void CheckInput()
     {
         
-        if(Input.GetButtonDown("Fire2"))
-            playerUnlocked = true;
+        //if(Input.GetButtonDown("Fire2"))
+         //   playerUnlocked = true;
 
         if (Input.GetButtonDown("Jump"))
             JumpButton();
