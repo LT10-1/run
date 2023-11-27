@@ -19,11 +19,27 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
+        //LoadColor();
     }
-    private void Start()
+
+    public void SaveColor(float r, float g, float b)
     {
-        PlayerPrefs.GetInt("Coins");
+
+        PlayerPrefs.SetFloat("ColorR", r);
+        PlayerPrefs.SetFloat("ColorG", g);
+        PlayerPrefs.SetFloat("ColorB", b);
+    }
+
+    private void LoadColor()
+    {
+        
+        SpriteRenderer sr = player.GetComponent<SpriteRenderer>();
+
+        Color newColor = new Color(PlayerPrefs.GetFloat("ColorR"),
+                                   PlayerPrefs.GetFloat("ColorG"),
+                                   PlayerPrefs.GetFloat("ColorB"),
+                                   PlayerPrefs.GetFloat("ColorA", 1));
+        sr.color = newColor;
     }
 
     private void Update()
@@ -36,9 +52,23 @@ public class GameManager : MonoBehaviour
 
     public void UnlockPlayer() => player.playerUnlocked = true;
 
-    public void RestartLevel() => SceneManager.LoadScene(0);
-    public void Save()
+    public void RestartLevel()
     {
-        PlayerPrefs.SetInt("TotalAmountOfCoins", coins);
+        SaveInfo();
+        SceneManager.LoadScene(0);
+    }
+    public void SaveInfo()
+    {
+
+        int savedCoins = PlayerPrefs.GetInt("Coins");
+
+        PlayerPrefs.SetInt("Coins", savedCoins + coins);
+
+        float Score = distance * coins;
+        PlayerPrefs.SetFloat("LastScore", Score);
+
+        if (PlayerPrefs.GetFloat("HighScore") < Score)
+            PlayerPrefs.SetFloat("HighScore", Score);
+        
     }
 }

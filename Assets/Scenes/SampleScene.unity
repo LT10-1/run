@@ -2059,6 +2059,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenu: {fileID: 1148687873}
+  lastScoreText: {fileID: 1513284076}
+  highScoreText: {fileID: 835306063}
+  coinsText: {fileID: 1693087804}
 --- !u!1 &583918882
 GameObject:
   m_ObjectHideFlags: 0

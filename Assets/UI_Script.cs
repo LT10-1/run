@@ -1,16 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class UI_Script : MonoBehaviour
 {
     private bool gamePaused;
     [SerializeField] private GameObject mainMenu;
+    [SerializeField] private TextMeshProUGUI lastScoreText;
+    [SerializeField] private TextMeshProUGUI highScoreText;
+    [SerializeField] private TextMeshProUGUI coinsText;
 
     private void Start()
     {
         SwitchMenuTo(mainMenu);
         Time.timeScale = 1;
+        lastScoreText.text = "Last Score:  " + PlayerPrefs.GetFloat("LastScore").ToString("#,#");
+        highScoreText.text = "Highest Score" + PlayerPrefs.GetFloat("HighScore").ToString("#,#");
     }
 
     public void SwitchMenuTo(GameObject uiMenu)
@@ -20,6 +27,8 @@ public class UI_Script : MonoBehaviour
             transform.GetChild(i).gameObject.SetActive(false);
         }
         uiMenu.SetActive(true);
+
+        coinsText.text = PlayerPrefs.GetInt("Coins").ToString("#,#");
     }
     public void StartGameButton() => GameManager.Instance.UnlockPlayer();
 
